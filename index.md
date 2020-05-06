@@ -1,5 +1,5 @@
 ## Welcome to GitHub Pages
-## View guide syntax [here] (https://chienpham92.github.io/SFCC-Note/guide)
+[View guide syntax](https://chienpham92.github.io/SFCC-Note/guide)
 
 You can use the [editor on GitHub](https://github.com/chienpham92/SFCC-Note/edit/master/index.md) to maintain and preview the content for your website in Markdown files.
 
