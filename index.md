@@ -6,3 +6,24 @@ You can use the [editor on GitHub](https://github.com/chienpham92/SFCC-Note/edit
 Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
 
 ### Markdown
+
+##Views
+
+### Basic print value
+`${pdict.name}`
+###  Pipeline Dictionary to Global Variable
+pdict	keys - Alternatives <br/>
+```javascript 
+ session, request, customer, request.httpParameterMap, request.pageMetaData, session.forms
+```
+### print value in script tag
+
+```javascript
+<script>
+ function test() {
+            return {
+                'name': <isprint value="${JSON.stringify(pdict.name)}" encoding="off"/>
+            }
+        }
+</script>
+```
