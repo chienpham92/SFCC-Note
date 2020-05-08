@@ -18,15 +18,13 @@ pdict	keys - Alternatives <br/>
 ```
 ### print value in script tag
 
-```javascript
-<script>
- function test() {
+    <script>
+         function test() {
             return {
                 'name': <isprint value="${JSON.stringify(pdict.name)}" encoding="off"/>
             }
         }
-</script>
-```
+    </script>
 
 ### Debug isml variable 
 ![step 1](/debug/debug_isml.png)
