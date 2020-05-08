@@ -29,4 +29,4 @@ pdict	keys - Alternatives <br/>
 ### Debug isml variable 
 ![step 1](/debug/debug_isml.png)
 ![step 2](/debug/debug_isml_result.png)
-[templateDebugger.ds](/debug/templateDebugger.ds)
+[templateDebugger.ds](/debug/TemplateDebugger.ds)
