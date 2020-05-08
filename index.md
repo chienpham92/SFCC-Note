@@ -27,3 +27,8 @@ pdict	keys - Alternatives <br/>
         }
 </script>
 ```
+
+### Debug isml variable 
+![step 1](https://github.com/chienpham92/SFCC-Note/debug/debug_isml.png)
+![step 2](https://github.com/chienpham92/SFCC-Note/debug/debug_isml_result.png)
+[file TemplateDebugger](https://github.com/chienpham92/SFCC-Note/debug/templateDebugger.ds)

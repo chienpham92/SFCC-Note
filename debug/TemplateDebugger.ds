@@ -1,0 +1,13 @@
+/*
+	Usage: Place a script debugger breakpoint on the `return` line within the function below. Then call it within a template wherever you need to inspect variables. eg:
+	    <isset name="pam" value="${pdict.product}" scope="page"/>
+	    <isscript>require('TemplateDebugger.ds').debug(request, pam)</isscript>
+*/
+
+/**
+ * A blank function that will give you a breakpoint (when called) within a template.
+ **/
+'use strict';
+exports.debug = function (var1, var2, var3, var4) {
+	return true;
+}
