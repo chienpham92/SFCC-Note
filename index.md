@@ -29,4 +29,22 @@ pdict	keys - Alternatives <br/>
 ### Debug isml variable 
 ![step 1](/debug/debug_isml.png)
 ![step 2](/debug/debug_isml_result.png)
-[templateDebugger.ds](/debug/TemplateDebugger.ds)
+[TemplateDebugger.ds](/debug/TemplateDebugger.ds)
+
+### JQuery in ISML Templates
+Avoid using the # character in jQuery or JavaScript because it's reserved in ISML templates and can cause problems.
+
+Instead of use: 
+    <a id="id-to-select" href="#">Link</a>
+    <script>
+        jQuery("#id-to-select").click(function() {
+    // Code here
+        });
+    </script>
+Use the following code:
+    <a id="id-to-select" href="${'#'}">Link</a>
+    <script type="text/javascript">
+        jQuery("a[id='id-to-select']").click(function() {
+            // Code here
+        });
+    </script>
