@@ -39,7 +39,7 @@ Instead of use:
         <a id="id-to-select" href="#">Link</a>
         <script>
             jQuery("#id-to-select").click(function() {
-        // Code here
+                // Code here
             });
         </script>
     </html>
