@@ -35,20 +35,21 @@ pdict	keys - Alternatives <br/>
 Avoid using the # character in jQuery or JavaScript because it's reserved in ISML templates and can cause problems.
 
 Instead of use: 
-    <html>
-        <a id="id-to-select" href="#">Link</a>
-        <script>
-            jQuery("#id-to-select").click(function() {
-                // Code here
-            });
-        </script>
-    </html>
+
+```html
+    <a id="id-to-select" href="#">Link</a>
+    <script>
+        jQuery("#id-to-select").click(function() {
+            // Code here
+        });
+    </script>
+```
 Use the following code:
-    <html>
-        <a id="id-to-select" href="${'#'}">Link</a>
-        <script type="text/javascript">
-            jQuery("a[id='id-to-select']").click(function() {
-                // Code here
-            });
-        </script>
-    </html>
+```html
+    <a id="id-to-select" href="${'#'}">Link</a>
+    <script type="text/javascript">
+        jQuery("a[id='id-to-select']").click(function() {
+            // Code here
+        });
+    </script>
+```
