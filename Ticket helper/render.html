@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Ticket helper</title>
+    <style>
+        .btn-close{
+            display: none !important;
+        }
+        .hoverable:hover{
+            background: #cccccc;
+        }
+        .hoverable:hover .btn-close{
+            display: inline-block !important;
+        }
+    </style>
+    <script src="vue.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+
+<body>
+    <div id="app" class="container-fluid pt-3">
+        <div class="row">
+            <div class="col-8 border-right">
+                <h3>Add ticket</h3>
+                <form v-on:submit.prevent="addTicket" class="">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                    <label for="">ProjectAlias (eg: SHSPC, VIH,..): </label>
+                                    <input type="text" class="form-control" v-model="projectAlias" @change="setLocalStorage($event, 'projectAlias')" required>
+                            </div>
+                            <div class="form-group mt-3">
+                                <label for="" class="mr-3">Number:</label>
+                                <input type="number" class="form-control" v-model="formDt.number" required>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="" class="mr-3">Type:</label>
+                                <div>
+                                    <button v-for="type in types" :key="type.value" :value="type.value" class="btn mr-2" 
+                                        :class="[formDt.type == type.value ? type.class : '']" 
+                                        type="button"
+                                        @click="formDt.type = type.value" >
+                                        {{type.title}}
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="form-group mt-3">
+                                <label for="" class="mr-3">Title:</label>
+                                <input type="text" class="form-control" v-model="formDt.title" required>
+                            </div>
+                            <button class="btn btn-primary float-right">Add ticket</button>
+                        </div>
+
+                    </div>
+                </form>
+                <hr>
+                <h3>List Ticket</h3>
+                <div>
+                    <div v-for="(item, i) in tickets" :key="i" @click="setTicket(i)" class="hoverable">
+                        <div class="py-3">
+                            <button v-for="type in types" :key="type.value" class="btn mr-2" v-if="item.type == type.value"
+                                        :class="[item.type == type.value ? type.class : '']" 
+                                        type="button" >
+                                        {{type.title}}
+                            </button>
+                            {{item.commitTitle}}
+                             <button class="btn btn-dark float-right btn-close" @click=removeTicket(i)><span aria-hidden="true">×</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="border-bottom pb-3 mb-3">
+                    <h3 class="b">Current Ticket: {{ticketNumber}} 
+                        <button class="btn btn-dark float-right" @click="clearLocalStorage">Clear</button>
+                        <a href="https://shiseidogroup.atlassian.net/projects/SHSPC/issues/?filter=myopenissues"
+                            class="btn btn-link float-right" target="_blank">My issues</a>
+                    </h3>
+                </div>
+                <div class="border-bottom">
+                    <p><b>Ticket</b> <button type="button" class="btn btn-outline-info" @click="copyToClipboard('link')">Copy</button></p>
+                    <p><a :href="ticket.link" target="_blank">{{ticket.link}}</a></p>
+                </div>
+                <div class="border-bottom">
+                    <p class="my-3"><b>Branch Name:</b> <button type="button" class="btn btn-outline-info" @click="copyToClipboard('branchName')">Copy</button></p>
+                    <p id="branchname">{{ticket.branchName}}</p>
+                </div>
+                <div class="border-bottom">
+                    <p class="my-3"><b>Commit Title:</b> <button type="button" class="btn btn-outline-info" @click="copyToClipboard('commitTitle')">Copy</button></p>
+                    <p id="committitle">{{ticket.commitTitle}}</p>
+                    <p class="my-3"><b>Short Commit Title:</b> <button type="button" class="btn btn-outline-info" @click="copyToClipboard('shortCommitTitle')">Copy</button></p>
+                    <p id="shortcommittitle">{{ticket.shortCommitTitle}}</p>
+                </div>
+                <div class="mt-3">
+                    <a href="https://bitbucket.org/shiseidogroup/shiseidogmw_apac2/pull-requests/new" class="btn btn-primary" target="_blank">Create Pull Request</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var types = [
+            {value: "feature", title: "Feature", class: "btn-success"},
+            {value: "bug", title: "Bug", class: "btn-danger"},
+            {value: "cr", title: "CR", class: "btn-warning"},
+            {value: "sp", title: "Support", class: "btn-info"},
+        ]
+    </script>
+    <script>
+        Vue.config.devtools = true;
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                ticketNumber: '',
+                tickets: [
+                    {
+                        title: '',
+                        type: 'feature',
+                        number: '',
+                        link:'',
+                        branchName:'',
+                        commitTitle:"",
+                        active: false
+                    }
+                ],
+                types: types,
+                formDt: {title: '', type:'feature', number:''},
+                projectAlias: '',
+                ticket: {
+                        title: '',
+                        type: 'feature',
+                        number: '',
+                        link:'',
+                        branchName:'',
+                        commitTitle:"",
+                        shortCommitTitle: "",
+                        active: false
+                    }
+            },
+            methods: {
+                addTicket(e){
+                    var link = `https://shiseidogroup.atlassian.net/browse/${this.projectAlias}-${this.formDt.number}`;
+                    var branchName = this.formDt.type + '/' + this.projectAlias.toLowerCase() +'_' 
+                                    + this.formDt.number + '_' + string_to_slug(this.formDt.title);
+                    var commitTitle = `[${this.projectAlias}-${this.formDt.number}] ${this.formDt.title}`;
+                    var shortCommitTitle = `[${this.projectAlias}-${this.formDt.number}] ${this.formDt.title.substring(this.formDt.title.indexOf(':')+1)}`
+                    var ticket = {
+                        title: this.formDt.title,
+                        type: this.formDt.type,
+                        number: this.formDt.number,
+                        link:link,
+                        branchName: branchName,
+                        commitTitle: commitTitle,
+                        shortCommitTitle: shortCommitTitle,
+                        active: false,
+                    }
+                    if(!this.tickets){
+                        this.tickets = []
+                    }
+                    this.tickets.push(ticket)
+                    this.ticketNumber = ticket.number
+                    this.clearFormDt()
+                    localStorage.setItem('tickets', JSON.stringify(this.tickets));
+                },
+                setTicket(i){
+                    this.ticket = this.tickets[i]
+                    if(!this.ticket){
+                        this.ticket = {
+                            title: '',
+                            type: 'feature',
+                            number: '',
+                            link:'',
+                            branchName:'',
+                            commitTitle:"",
+                            active: false
+                        }
+                    }
+                },
+                removeTicket(i){
+                    this.tickets.splice(i, 1)
+                    localStorage.setItem('tickets', JSON.stringify(this.tickets));
+                },
+                setLocalStorage(e, key){
+                    localStorage.setItem(key, e.target.value);
+                },
+                clearLocalStorage(){
+                    localStorage.removeItem('tickets');
+                },
+                clearFormDt(){
+                    this.formDt.title = ''
+                    this.formDt.number = ''
+                },
+                copyToClipboard(key){
+                    var text = this.ticket[key]
+                    if(key == 'link') {
+                        text = 'link: ' + text
+                    }
+                    navigator.clipboard.writeText(text)
+                    document.execCommand("copy");
+                }
+            },
+            created(){
+                this.projectAlias = localStorage.getItem("projectAlias");
+                var localTickets = localStorage.getItem("tickets");
+                this.tickets = localTickets ? JSON.parse(localTickets) : [];
+            }
+        });
+        function string_to_slug(str) {
+            str = str.replace(/^\s+|\s+$/g, ''); // trim
+            str = str.toLowerCase();
+
+            // remove accents, swap ñ for n, etc
+            var from = "àáäâèéëêìíïîòóöôùúüûñç·/_,:;";
+            var to = "aaaaeeeeiiiioooouuuunc------";
+            for (var i = 0, l = from.length; i < l; i++) {
+                str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
+            }
+
+            str = str.replace(/'/g, '')
+                .replace(/[^a-z0-9 -]/g, '_')
+                .replace(/-+/g, '_')
+                .replace(/\s+/g, '_') // collapse whitespace and replace by -
+                .replace(/_+/g, '_') // collapse dashes
+                .replace(/^_+/g, '') // collapse dashes
+
+            console.log(str); // eslint-disable-line no-console
+            
+            return str;
+        }
+        function shortCommitTitle(title) {
+            var arr = title.split(":");
+        }
+    </script>
+
+</body>
+
+</html>
